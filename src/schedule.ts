@@ -111,7 +111,7 @@ export class Parser {
         var long = x.Longitude
         if (lat.match("\\d+\.\\d+\.\\d+")) {
             lat = this.tidyDirtyLatLong(lat)
-            lat = this.tidyDirtyLatLong(long)
+            long = this.tidyDirtyLatLong(long)
         }
         const loc =  new Location(x['Raum/ Anzeigename'], lat, long)
         var host = undefined
