@@ -2,7 +2,6 @@ import DataFrame from 'dataframe-js';
 import Papa = require('papaparse')
 import fs = require('fs');
 import moment = require('moment')
-import { URL } from "url";
 
 export class Schedule {
     constructor(public days : Array<DaySchedule>) {
@@ -36,7 +35,7 @@ export class Block {
 }
 
 export class BlockItem {
-    constructor(public location: Location, public name: String, public description: String, public host?: Host, public image?: URL) {
+    constructor(public location: Location, public name: String, public description: String, public host?: Host, public image?: String) {
         
     }
 }
@@ -48,7 +47,7 @@ export class Location {
 }
 
 export class Host {
-    constructor(public image: URL, public name: String, public title : String, public description: String, public link? : URL) {
+    constructor(public image: String, public name: String, public title : String, public description: String, public link? : String) {
 
     }
 }
@@ -57,7 +56,7 @@ export class Parser {
     public agg : any
     public schedule : Schedule
     patterns = ['YYYY-MM-DD HH:mm', 'YYYY-MM-DD H:mm']
-    constructor(filepath : string) {
+    constructor(filepath : string, filepath_speaker : string) {
         var content = fs.readFileSync(filepath, "utf8");
         var rows;
         const data = Papa.parse(content, {
@@ -66,10 +65,19 @@ export class Parser {
                 rows = results.data;
             }
         })
+        var content_speaker = fs.readFileSync(filepath_speaker, "utf8");
+        var rows_speaker;
+        const data_speaker = Papa.parse(content_speaker, {
+            header:true,
+            complete: function(results) {
+                rows_speaker = results.data;
+            }
+        })
         const df = new DataFrame(rows, data.meta.fields);
+        const df_speaker = new DataFrame(rows_speaker, data_speaker.meta.fields);
         const groupedDF = df.groupBy('Block', 'Datum - start');
         this.agg = groupedDF.aggregate((group, key) => {
-            let blockItems = group.toCollection().map(i => this.toBlockItem(i))
+            let blockItems = group.toCollection().map(i => this.toBlockItem(i, df_speaker))
             var start = moment("2018.05.02  14:00", this.patterns).toDate()
             var end = moment("2018.05.02  17:00", this.patterns).toDate()
             const first = group.toCollection()[0]
@@ -98,7 +106,7 @@ export class Parser {
         this.schedule = new Schedule(days)
     }
 
-    public toBlockItem(x : any) : BlockItem {
+    public toBlockItem(x : any, df_speaker : any) : BlockItem {
         var lat = x.Latitude
         var long = x.Longitude
         if (lat.match("\\d+\.\\d+\.\\d+")) {
@@ -108,11 +116,20 @@ export class Parser {
         const loc =  new Location(x['Raum/ Anzeigename'], lat, long)
         var host = undefined
         if (x.Referent != "") {
+            var url =  "/assets/speakers/"+"unknown.png"
+            var title = ""
+            var desc = ""
+            const ref_row = df_speaker.find({'Name und Titel': x.Referent})
+            if (ref_row) {
+                url =  "/assets/speakers/"+ref_row.get("Name des Bilds")
+                title = ref_row.get("Position")
+                desc = ref_row.get("CV")
+            }
             host = new Host(
-                new URL("https://timedotcom.files.wordpress.com/2014/02/microsoft-ceo-satya-nadella.jpg"),
+                url,
                 x.Referent,
-                "",
-                ""
+                title,
+                desc
             )
         }
         return new BlockItem(loc, x[''], x.Abstract, host)
@@ -125,3 +142,4 @@ export class Parser {
 }
 
 export const FILE_FORMATS : string = "./data/app/Übersicht Formate-Table 1.csv"
+export const FILE_FORMATS_Ref : string = "./data/app/Referentenprofile-Table 1.csv"

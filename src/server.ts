@@ -9,7 +9,7 @@ class App {
   constructor () {
     this.express = express()
     this.express.use(cors());
-    const p = new s.Parser(s.FILE_FORMATS)
+    const p = new s.Parser(s.FILE_FORMATS, s.FILE_FORMATS_Ref)
     this.schedule = p.schedule
     this.mountRoutes()
   }
