@@ -1,0 +1,38 @@
+{
+    "name": "talkit-event-app-api",
+    "version": "1.0.0",
+    "description": "an backend which talks to the talkit app",
+    "main": "index.ts",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "npm run build:live",
+        "build:live": "nodemon --exec ./node_modules/.bin/ts-node -- ./src/index.ts"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/hackundsoehne/talKIT-Event-App-API.git"
+    },
+    "author": "Leander Kurscheidt",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/hackundsoehne/talKIT-Event-App-API/issues"
+    },
+    "homepage": "https://github.com/hackundsoehne/talKIT-Event-App-API#readme",
+    "dependencies": {
+        "@types/papaparse": "^4.1.33",
+        "babel-runtime": "^6.26.0",
+        "dataframe-js": "^1.2.8",
+        "express": "^4.16.3",
+        "moment": "^2.22.1",
+        "node": "^9.11.0",
+        "pandas-js": "^0.2.4",
+        "papaparse": "^4.3.7"
+    },
+    "devDependencies": {
+        "@types/mocha": "^5.2.0",
+        "@types/node": "^9.6.6",
+        "nodemon": "^1.17.3",
+        "ts-node": "^6.0.0",
+        "typescript": "^2.8.3"
+    }
+}
