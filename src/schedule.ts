@@ -99,7 +99,13 @@ export class Parser {
     }
 
     public toBlockItem(x : any) : BlockItem {
-        const loc =  new Location(x['Raum/ Anzeigename'], x.Latitude, x.Longitude)
+        var lat = x.Latitude
+        var long = x.Longitude
+        if (lat.match("\\d+\.\\d+\.\\d+")) {
+            lat = this.tidyDirtyLatLong(lat)
+            lat = this.tidyDirtyLatLong(long)
+        }
+        const loc =  new Location(x['Raum/ Anzeigename'], lat, long)
         var host = undefined
         if (x.Referent != "") {
             host = new Host(
@@ -110,6 +116,11 @@ export class Parser {
             )
         }
         return new BlockItem(loc, x[''], x.Abstract, host)
+    }
+
+    tidyDirtyLatLong(s : String) : String {
+        var position = s.indexOf(".", s.indexOf(".") + 1);
+        return s.substr(0, position) + s.substr(position + 1);
     }
 }
 
