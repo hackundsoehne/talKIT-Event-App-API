@@ -1,5 +1,6 @@
 import * as express from 'express'
 import * as s from './schedule'
+var cors = require('cors');
 
 class App {
   public express
@@ -7,6 +8,7 @@ class App {
 
   constructor () {
     this.express = express()
+    this.express.use(cors());
     const p = new s.Parser(s.FILE_FORMATS)
     this.schedule = p.schedule
     this.mountRoutes()
