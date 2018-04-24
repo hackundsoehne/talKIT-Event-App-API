@@ -134,7 +134,7 @@ export class Parser {
                 desc
             )
         }
-        return new BlockItem(loc, x[''], x.Abstract, host)
+        return new BlockItem(loc, x['Event'], x.Abstract, host)
     }
 
     tidyDirtyLatLong(s : String) : String {
