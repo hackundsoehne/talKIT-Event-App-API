@@ -96,7 +96,9 @@ export class Parser {
                 return row.set('Datum - start', day)
             })
             .groupBy('Datum - start').aggregate((group, key) => {
-                const blocks = group.toCollection().map(x => x.aggregation)
+                const blocks = group.toCollection()
+                    .map(x => x.aggregation)
+                    .sort((x : Block, y : Block) => x.start.getTime() - y.start.getTime())
                 const date = blocks[0].start
                 return new DaySchedule(date, blocks)
             })
