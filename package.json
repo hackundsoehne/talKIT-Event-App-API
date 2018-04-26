@@ -25,6 +25,7 @@
         "dataframe-js": "^1.2.8",
         "express": "^4.16.3",
         "moment": "^2.22.1",
+        "moment-timezone": "^0.5.16",
         "node": "^9.11.0",
         "pandas-js": "^0.2.4",
         "papaparse": "^4.3.7"

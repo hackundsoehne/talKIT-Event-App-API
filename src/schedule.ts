@@ -1,7 +1,7 @@
 import DataFrame from 'dataframe-js';
 import Papa = require('papaparse')
 import fs = require('fs');
-import moment = require('moment')
+import moment = require('moment-timezone')
 
 export class Schedule {
     constructor(public days : Array<DaySchedule>) {
@@ -78,6 +78,7 @@ export class Parser {
         const groupedDF = df.groupBy('Block', 'Datum - start');
         this.agg = groupedDF.aggregate((group, key) => {
             let blockItems = group.toCollection().map(i => this.toBlockItem(i, df_speaker))
+            //TODO stupid hack because i can't get the timezones to work otherwise
             var start = moment("2018.05.02  14:00", this.patterns).toDate()
             var end = moment("2018.05.02  17:00", this.patterns).toDate()
             const first = group.toCollection()[0]
@@ -85,6 +86,8 @@ export class Parser {
                 var start = moment(first['Datum - start'], this.patterns).toDate()
                 var end = moment(first['Datum - end'], this.patterns).toDate()
             }
+            start.setHours(start.getHours() - 2)
+            end.setHours(end.getHours() - 2)
             return new Block(start, end, key['Block'], blockItems)
         })
         const days = this.agg
