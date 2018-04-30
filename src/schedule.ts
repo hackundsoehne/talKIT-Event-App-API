@@ -150,5 +150,5 @@ export class Parser {
     }
 }
 
-export const FILE_FORMATS : string = "./data/app/Übersicht Formate-Table 1.csv"
+export const FILE_FORMATS : string = "./data/app/Uebersicht Formate-Table 1.csv"
 export const FILE_FORMATS_Ref : string = "./data/app/Referentenprofile-Table 1.csv"
