@@ -141,7 +141,7 @@ export class Parser {
         if (x["Name des Bildes in der Box"] != "") {
             image = "/assets/events" + x["Name des Bildes in der Box"]
         }
-        return new BlockItem(loc, x['Event'], x.Abstract, host)
+        return new BlockItem(loc, x['Event'], x.Abstract, host, image)
     }
 
     tidyDirtyLatLong(s : String) : String {
