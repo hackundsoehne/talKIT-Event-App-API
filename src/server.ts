@@ -11,6 +11,12 @@ class App {
   constructor () {
     this.express = express()
     this.express.use(cors());
+    this.express.use(function(req, res, next) {
+      res.header("Access-Control-Allow-Origin", "*");
+      res.header('Access-Control-Allow-Methods', 'DELETE, PUT, GET, POST');
+      res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+      next();
+   });
     const p = new s.Parser(s.FILE_FORMATS, s.FILE_FORMATS_Ref)
     const p_users = new u.FiltersParser(u.FILE_USERS)
     this.schedule = p.schedule
