@@ -137,6 +137,10 @@ export class Parser {
                 desc
             )
         }
+        var image = undefined
+        if (x["Name des Bildes in der Box"] != "") {
+            image = "/assets/events" + x["Name des Bildes in der Box"]
+        }
         return new BlockItem(loc, x['Event'], x.Abstract, host)
     }
 
