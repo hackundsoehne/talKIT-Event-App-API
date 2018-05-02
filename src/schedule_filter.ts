@@ -113,11 +113,11 @@ export class FiltersParser {
                 var event = undefined
                 var active = true
                 if (val != "Nein" && val != "Ja") {
-                    event = val
+                    event = val.trim()
                 } else if (val == "Nein"){
                     active = false
                 }
-                usersFilter.addFilter(name, new Filter(active, date, event))
+                usersFilter.addFilter(name.trim(), new Filter(active, date, event))
             }
             this.usersFilters.addUser(id, usersFilter)
         }

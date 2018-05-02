@@ -88,7 +88,7 @@ export class Parser {
             }
             start.setHours(start.getHours() - 2)
             end.setHours(end.getHours() - 2)
-            return new Block(start, end, key['Block'], blockItems)
+            return new Block(start, end, key['Block'].trim(), blockItems)
         })
         const days = this.agg
             .map(row => {
@@ -141,7 +141,7 @@ export class Parser {
         if (x["Name des Bildes in der Box"] != "") {
             image = "/assets/events/" + x["Name des Bildes in der Box"]
         }
-        return new BlockItem(loc, x['Event'], x.Abstract, host, image)
+        return new BlockItem(loc, x['Event'].trim(), x.Abstract, host, image)
     }
 
     tidyDirtyLatLong(s : String) : String {
