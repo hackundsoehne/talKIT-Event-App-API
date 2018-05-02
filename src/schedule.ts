@@ -79,8 +79,8 @@ export class Parser {
         this.agg = groupedDF.aggregate((group, key) => {
             let blockItems = group.toCollection().map(i => this.toBlockItem(i, df_speaker))
             //TODO stupid hack because i can't get the timezones to work otherwise
-            var start = moment("2018.05.02  14:00", this.patterns).toDate()
-            var end = moment("2018.05.02  17:00", this.patterns).toDate()
+            var start = moment("2018.05.03  07:30", this.patterns).toDate()
+            var end = moment("2018.05.03  08:00", this.patterns).toDate()
             const first = group.toCollection()[0]
             if (first['Datum - start'] != "") {
                 var start = moment(first['Datum - start'], this.patterns).toDate()
