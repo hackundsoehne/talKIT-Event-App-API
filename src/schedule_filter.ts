@@ -50,8 +50,16 @@ export class UserFilters {
         for (let block of day.blocks) {
             const filters = this.filtersMap.get(block.name)
             if (filters) {
-                const filtered = filters.reduce((block,filter) => filter.apply(block), block)
-                newBlocks.push(filtered)
+                const filtered = filters.reduce((block,filter) => {
+                    if(block) {
+                        return filter.apply(block)
+                    } else {
+                        return block
+                    }
+                }, block)
+                if (filtered) {
+                    newBlocks.push(filtered)
+                }
             } else {
                 newBlocks.push(block)
             }
