@@ -15,7 +15,7 @@ export class Filter {
             return undefined
         }
         if (this.event) {
-            var items = block.items.filter(item => item.name == this.event)
+            var items = block.items.filter(item => item.name.replace(/ /g, "") == this.event)
             if (items.length == 0) {
                 return undefined
             } else {
@@ -48,7 +48,7 @@ export class UserFilters {
     public mapDay (day : DaySchedule) : DaySchedule {
         var newBlocks : Array<Block> = new Array()
         for (let block of day.blocks) {
-            const filters = this.filtersMap.get(block.name)
+            const filters = this.filtersMap.get(block.name.replace(/ /g, ""))
             if (filters) {
                 const filtered = filters.reduce((block,filter) => {
                     if(block) {
@@ -113,11 +113,11 @@ export class FiltersParser {
                 var event = undefined
                 var active = true
                 if (val != "Nein" && val != "Ja") {
-                    event = val.trim()
+                    event = val.replace(/ /g, "")
                 } else if (val == "Nein"){
                     active = false
                 }
-                usersFilter.addFilter(name.trim(), new Filter(active, date, event))
+                usersFilter.addFilter(name.trim().replace(/ /g, ""), new Filter(active, date, event))
             }
             this.usersFilters.addUser(id, usersFilter)
         }
