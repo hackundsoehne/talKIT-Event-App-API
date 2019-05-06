@@ -55,7 +55,7 @@ export class Host {
 export class Parser {
     public agg : any
     public schedule : Schedule
-    patterns = ['YYYY-MM-DD HH:mm', 'YYYY-MM-DD H:mm', 'DD.MM.YYYY HH:mm']
+    patterns = ['YYYY-MM-DD HH:mm', 'YYYY-MM-DD H:mm', 'DD.MM.YYYY HH:mm', 'MM/DD/YY HH:mm']
     constructor(filepath : string, filepath_speaker : string) {
         var content = fs.readFileSync(filepath, "utf8");
         var rows;
@@ -87,8 +87,8 @@ export class Parser {
             var end = moment("08.05.2019 18:00", this.patterns).toDate()
             const first = group.toCollection()[0]
             if (first[date_start] != "") {
-                var start = moment(first[date_start], this.patterns[2]).toDate()
-                var end = moment(first['Datum - end'], this.patterns[2]).toDate()
+                var start = moment(first[date_start], this.patterns[3]).toDate()
+                var end = moment(first['Datum - end'], this.patterns[3]).toDate()
             }
             start.setHours(start.getHours() - 2)
             end.setHours(end.getHours() - 2)
