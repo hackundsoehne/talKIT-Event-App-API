@@ -87,8 +87,8 @@ export class Parser {
             var end = moment("08.05.2019 18:00", this.patterns).toDate()
             const first = group.toCollection()[0]
             if (first[date_start] != "") {
-                var start = moment(first[date_start], this.patterns).toDate()
-                var end = moment(first['Datum - end'], this.patterns).toDate()
+                var start = moment(first[date_start], this.patterns[2]).toDate()
+                var end = moment(first['Datum - end'], this.patterns[2]).toDate()
             }
             start.setHours(start.getHours() - 2)
             end.setHours(end.getHours() - 2)
