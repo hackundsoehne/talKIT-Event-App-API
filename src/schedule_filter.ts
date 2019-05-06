@@ -92,11 +92,11 @@ export class FiltersParser {
             }
         })
         for (let row of rows) {
-            const id = row["Teilnehmer ID/ Passwort"]
-            delete row["Teilnehmer ID/ Passwort"]
-            delete row["Email Adresse"]
-            delete row["Vorname"]
-            delete row["Nachname"]
+            const id = row[data.meta.fields[0]]
+            delete row[data.meta.fields[0]]
+            //delete row["Email Adresse"]
+            //delete row["Vorname"]
+            //delete row["Nachname"]
             const usersFilter = new UserFilters()
             for (const key of Object.keys(row)) {
                 const val : string = row[key]

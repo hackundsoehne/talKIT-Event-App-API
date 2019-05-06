@@ -55,7 +55,7 @@ export class Host {
 export class Parser {
     public agg : any
     public schedule : Schedule
-    patterns = ['YYYY-MM-DD HH:mm', 'YYYY-MM-DD H:mm']
+    patterns = ['YYYY-MM-DD HH:mm', 'YYYY-MM-DD H:mm', 'DD.MM.YYYY HH:mm']
     constructor(filepath : string, filepath_speaker : string) {
         var content = fs.readFileSync(filepath, "utf8");
         var rows;
@@ -73,17 +73,21 @@ export class Parser {
                 rows_speaker = results.data;
             }
         })
-        const df = new DataFrame(rows, data.meta.fields);
-        const df_speaker = new DataFrame(rows_speaker, data_speaker.meta.fields);
-        const groupedDF = df.groupBy('Block', 'Datum - start');
+        rows = rows.filter((x) => x['Datum - end'] != undefined)
+        const fields = data.meta.fields.map(Function.prototype.call, String.prototype.trim)
+        const date_start = 'Datum - start'
+        const name_title = 'Name und Titel'
+        const df = new DataFrame(rows, data.meta.fields).rename(data.meta.fields[0], date_start);
+        const df_speaker = new DataFrame(rows_speaker, data_speaker.meta.fields).rename(data_speaker.meta.fields[0], name_title);
+        const groupedDF = df.groupBy('Block', date_start);
         this.agg = groupedDF.aggregate((group, key) => {
             let blockItems = group.toCollection().map(i => this.toBlockItem(i, df_speaker))
             //TODO stupid hack because i can't get the timezones to work otherwise
-            var start = moment("2018.05.03  07:30", this.patterns).toDate()
-            var end = moment("2018.05.03  08:00", this.patterns).toDate()
+            var start = moment("08.05.2019 14:00", this.patterns).toDate()
+            var end = moment("08.05.2019 18:00", this.patterns).toDate()
             const first = group.toCollection()[0]
-            if (first['Datum - start'] != "") {
-                var start = moment(first['Datum - start'], this.patterns).toDate()
+            if (first[date_start] != "") {
+                var start = moment(first[date_start], this.patterns).toDate()
                 var end = moment(first['Datum - end'], this.patterns).toDate()
             }
             start.setHours(start.getHours() - 2)
@@ -93,12 +97,12 @@ export class Parser {
         const days = this.agg
             .map(row => {
                 var day = 3
-                if (row.get('Datum - start') != "") {
-                    day = moment(row.get('Datum - start'), this.patterns).toDate().getDay()
+                if (row.get(date_start) != "") {
+                    day = moment(row.get(date_start), this.patterns).toDate().getDay()
                 }
-                return row.set('Datum - start', day)
+                return row.set(date_start, day)
             })
-            .groupBy('Datum - start').aggregate((group, key) => {
+            .groupBy(date_start).aggregate((group, key) => {
                 const blocks = group.toCollection()
                     .map(x => x.aggregation)
                     .sort((x : Block, y : Block) => x.start.getTime() - y.start.getTime())
@@ -118,13 +122,13 @@ export class Parser {
             lat = this.tidyDirtyLatLong(lat)
             long = this.tidyDirtyLatLong(long)
         }
-        const loc =  new Location(x['Raum/ Anzeigename'], lat, long)
+        const loc =  new Location(x['Location'], lat, long)
         var host = undefined
-        if (x.Referent != "") {
+        if (x.Speaker != "") {
             var url =  "/assets/speakers/"+"unknown.png"
             var title = ""
             var desc = ""
-            const ref_row = df_speaker.find({'Name und Titel': x.Referent})
+            const ref_row = df_speaker.find({'Name und Titel': x.Speaker})
             if (ref_row) {
                 url =  "/assets/speakers/"+ref_row.get("Name des Bilds")
                 title = ref_row.get("Position")
@@ -132,14 +136,14 @@ export class Parser {
             }
             host = new Host(
                 url,
-                x.Referent,
+                x.Speaker,
                 title,
                 desc
             )
         }
         var image = undefined
-        if (x["Name des Bildes in der Box"] != "") {
-            image = "/assets/events/" + x["Name des Bildes in der Box"]
+        if (x["Picture"] != "") {
+            image = "/assets/events/" + x["Picture"]
         }
         return new BlockItem(loc, x['Event'].trim().replace(/[\n\r]/g, ''), x.Abstract, host, image)
     }
