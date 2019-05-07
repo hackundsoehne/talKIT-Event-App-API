@@ -105,7 +105,7 @@ export class FiltersParser {
                 }
                 var name = key
                 var date : Date = undefined
-                const res = key.match("(\\w+) - (\\d\\d\.\\d\\d\.\\d\\d\\d\\d)")
+                const res = key.match("([\\w\\s]+) - (\\d\\d\.\\d\\d\.\\d\\d\\d\\d)")
                 if (res) {
                     name = res[1]
                     date = moment(res[2], this.patterns).toDate()
