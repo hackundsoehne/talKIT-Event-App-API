@@ -15,7 +15,7 @@ export class Filter {
             return undefined
         }
         if (this.event) {
-            var items = block.items.filter(item => item.name.replace(/ /g, "") == this.event)
+            var items = block.items.filter(item => item.name.replace(/(\r\n|\s)/g, "") == this.event)
             if (items.length == 0) {
                 return undefined
             } else {
@@ -100,7 +100,7 @@ export class FiltersParser {
             const usersFilter = new UserFilters()
             for (const key of Object.keys(row)) {
                 const val : string = row[key]
-                if (val == "") {
+                if (key == "__parsed_extra" || val == "") {
                     continue
                 }
                 var name = key
@@ -113,11 +113,11 @@ export class FiltersParser {
                 var event = undefined
                 var active = true
                 if (val != "Nein" && val != "Ja") {
-                    event = val.replace(/ /g, "")
+                    event = val.replace(/(\r\n|\s)/g, "")
                 } else if (val == "Nein"){
                     active = false
                 }
-                usersFilter.addFilter(name.trim().replace(/ /g, ""), new Filter(active, date, event))
+                usersFilter.addFilter(name.trim().replace(/(\r\n|\s)/g, ""), new Filter(active, date, event))
             }
             this.usersFilters.addUser(id, usersFilter)
         }
